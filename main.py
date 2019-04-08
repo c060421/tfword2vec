@@ -29,9 +29,9 @@ class word2vec():
             # model parameters
             assert type(vocab_list)==list
             self.vocab_list     = vocab_list
-            self.vocab_size     = vocab_list.__len__()
+            self.vocab_size     = vocab_list.__len__()#返回元素的个数
             self.embedding_size = embedding_size
-            self.win_len        = win_len
+            self.win_len        = win_len#窗口大小：2*win_len + 1
             self.num_sampled    = num_sampled
             self.learning_rate  = learning_rate
             self.logdir         = logdir
@@ -48,7 +48,8 @@ class word2vec():
             # train loss records
             self.train_loss_records = collections.deque(maxlen=10) # 保存最近10次的误差
             self.train_loss_k10 = 0
-
+			
+		# 图的初始化和相关参数的设置？
         self.build_graph()
         self.init_op()
         if model_path!=None:
