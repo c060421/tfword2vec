@@ -1,3 +1,5 @@
+#https://www.cnblogs.com/wuzhitj/p/6298011.html
+
 import tensorflow as tf
 import numpy as np
 import math
