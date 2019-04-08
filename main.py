@@ -6,7 +6,7 @@ import math
 import collections
 import pickle as pkl
 from pprint import pprint
-from pymongo import MongoClient
+#from pymongo import MongoClient
 import re
 import jieba
 import os.path as path
@@ -61,7 +61,9 @@ class word2vec():
     def init_op(self):
         self.sess = tf.Session(graph=self.graph)
         self.sess.run(self.init)
-        self.summary_writer = tf.train.SummaryWriter(self.logdir, self.sess.graph)
+#        self.summary_writer = tf.train.SummaryWriter(self.logdir, self.sess.graph)
+#        self.summary_writer = tf.train.summary.FileWriter(self.logdir, self.sess.graph)
+        self.summary_writer = tf.summary.FileWriter(self.logdir, self.sess.graph)
 
     def build_graph(self):
         self.graph = tf.Graph()
@@ -94,7 +96,8 @@ class word2vec():
             )
 
             # tensorboard 相关
-            tf.scalar_summary('loss',self.loss)  # 让tensorflow记录参数
+            #tf.scalar_summary('loss',self.loss)  # 让tensorflow记录参数
+            tf.summary.scalar('loss',self.loss)#python3 ?
 
             # 根据 nce loss 来更新梯度和embedding
             self.train_op = tf.train.GradientDescentOptimizer(learning_rate=0.1).minimize(self.loss)  # 训练操作
@@ -106,7 +109,8 @@ class word2vec():
             )
 
             avg_l2_model = tf.reduce_mean(vec_l2_model)
-            tf.scalar_summary('avg_vec_model',avg_l2_model)
+#            tf.scalar_summary('avg_vec_model',avg_l2_model)
+            tf.summary.scalar('avg_vec_model',avg_l2_model) #python3
 
             self.normed_embedding = self.embedding_dict / vec_l2_model
             # self.embedding_dict = norm_vec # 对embedding向量正则化
@@ -116,8 +120,9 @@ class word2vec():
             # 变量初始化
             self.init = tf.global_variables_initializer()
 
-            self.merged_summary_op = tf.merge_all_summaries()
-
+#            self.merged_summary_op = tf.merge_all_summaries()
+            self.merged_summary_op = tf.summary.merge_all()
+            
             self.saver = tf.train.Saver()
 
     def train_by_sentence(self, input_sentence=[]):
@@ -244,7 +249,9 @@ if __name__=='__main__':
 
     # step 1 读取停用词
     stop_words = []
-    with open('stop_words.txt') as f:
+#    with open('stop_words.txt','rb') as f:
+    with open('stop_words.txt',encoding = 'utf-8') as f:
+#    with open('stop_words.txt') as f:
         line = f.readline()
         while line:
             stop_words.append(line[:-1])
